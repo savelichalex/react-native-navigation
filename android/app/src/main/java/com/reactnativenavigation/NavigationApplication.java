@@ -23,8 +23,8 @@ public abstract class NavigationApplication extends Application implements React
 
     public static NavigationApplication instance;
 
-    private NavigationReactGateway reactGateway;
-    private EventEmitter eventEmitter;
+    protected NavigationReactGateway reactGateway;
+    protected EventEmitter eventEmitter;
     private Handler handler;
     private ActivityCallbacks activityCallbacks;
 
@@ -33,8 +33,8 @@ public abstract class NavigationApplication extends Application implements React
         super.onCreate();
         instance = this;
         handler = new Handler(getMainLooper());
-        reactGateway = new NavigationReactGateway();
-        eventEmitter = new EventEmitter(reactGateway);
+        // reactGateway = new NavigationReactGateway();
+        // eventEmitter = new EventEmitter(reactGateway);
         activityCallbacks = new ActivityCallbacks();
     }
 

@@ -40,31 +40,10 @@ public abstract class SplashActivity extends AppCompatActivity {
         super.onResume();
         isResumed = true;
 
-        if (NavigationApplication.instance.getReactGateway().hasStartedCreatingContext()) {
-            if (CompatUtils.isSplashOpenedOverNavigationActivity(this, getIntent())) {
-                finish();
-                return;
-            }
-            NavigationApplication.instance.getEventEmitter().sendAppLaunchedEvent();
-            if (NavigationApplication.instance.clearHostOnActivityDestroy()) {
-                overridePendingTransition(0, 0);
-                finish();
-            }
-            return;
-        }
-
         if (ReactDevPermission.shouldAskPermission()) {
             ReactDevPermission.askPermission(this);
             return;
         }
-
-        if (NavigationApplication.instance.isReactContextInitialized()) {
-            NavigationApplication.instance.getEventEmitter().sendAppLaunchedEvent();
-            return;
-        }
-
-        // TODO I'm starting to think this entire flow is incorrect and should be done in Application
-        NavigationApplication.instance.startReactContextOnceInBackgroundAndExecuteJS();
     }
 
     @Override
