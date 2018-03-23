@@ -44,12 +44,36 @@ public abstract class SplashActivity extends AppCompatActivity {
             ReactDevPermission.askPermission(this);
             return;
         }
+
+        checkJSInitializationAndLaunchApp();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         isResumed = false;
+    }
+
+    protected void checkJSInitializationAndLaunchApp() {
+        if (NavigationApplication.instance.getReactGateway().hasStartedCreatingContext()) {
+            if (CompatUtils.isSplashOpenedOverNavigationActivity(this, getIntent())) {
+                finish();
+                return;
+            }
+            NavigationApplication.instance.getEventEmitter().sendAppLaunchedEvent();
+            if (NavigationApplication.instance.clearHostOnActivityDestroy()) {
+                overridePendingTransition(0, 0);
+                finish();
+            }
+            return;
+        }
+
+        if (NavigationApplication.instance.isReactContextInitialized()) {
+            NavigationApplication.instance.getEventEmitter().sendAppLaunchedEvent();
+            return;
+        }
+
+        NavigationApplication.instance.startReactContextOnceInBackgroundAndExecuteJS();
     }
 
     private void setSplashLayout() {

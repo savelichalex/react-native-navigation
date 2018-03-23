@@ -33,9 +33,9 @@ public abstract class NavigationApplication extends Application implements React
         super.onCreate();
         instance = this;
         handler = new Handler(getMainLooper());
-        // reactGateway = new NavigationReactGateway();
-        // eventEmitter = new EventEmitter(reactGateway);
         activityCallbacks = new ActivityCallbacks();
+
+        onCreateInitJS();
     }
 
     @Override
@@ -50,6 +50,21 @@ public abstract class NavigationApplication extends Application implements React
         } else {
             super.startActivity(intent);
         }
+    }
+
+    /**
+     * onCreateInitJS and initJS is separated to be able to create custom logic
+     * i.e. check internet connection before run js initialization
+     * (this is suitable with code push that required internet connection)
+     * You can override `onCreateInitJS` and then call `initJS` when app is ready
+     */
+    protected void onCreateInitJS() {
+        initJS();
+    }
+
+    protected void initJS() {
+        reactGateway = new NavigationReactGateway();
+        eventEmitter = new EventEmitter(reactGateway);
     }
 
     public void startReactContextOnceInBackgroundAndExecuteJS() {
